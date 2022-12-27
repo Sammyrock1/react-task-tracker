@@ -1,29 +1,28 @@
 import Header from "./components/Header";
 import Task from "./components/Task";
 import AddTask from "./components/AddTask";
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 
-function App() {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      text: " Doctor Appointment",
-      day: "Feb 5th at 2:30pm",
-      reminder: true,
-    },
-    {
-      id: 2,
-      text: " Meeting At School",
-      day: "Feb 6th at 1:30pm",
-      reminder: true,
-    },
-    {
-      id: 3,
-      text: " Food Shopping",
-      day: "Feb 5th at 2:30pm",
-      reminder: false,
-    },
-  ]);
+function App({task}) {
+  const [ ShowAddTask, setShowAddTask] = useState(false)
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const fetchTasks = async() => {
+      const res = await fetch("http://localhost:5000/tasks");
+            const data =  await res.json();
+
+      console.log(data)
+    }
+    fetchTasks();
+  },[])
+//Add Task
+const addTask = (task) => {
+  console.log(task)
+   const id = Math.floor(Math.random() * 10000) +1
+  const newTask = { id, ...task };
+ setTasks([...tasks, newTask]);
+}
   //Delete task
   const deleteTask = (id) =>{
     setTasks(tasks.filter((task) => task.id !== id));
@@ -36,8 +35,11 @@ function App() {
   }
   return (
     <div className="container">
-      <Header/>
-      <AddTask/>
+      <Header onAdd ={() => setShowAddTask(!ShowAddTask)}
+      ShowAdd={ShowAddTask}
+      />
+      {ShowAddTask && <AddTask onAdd={addTask}
+      />}
       <>
        {
         tasks.length > 0 ? tasks.map((item )=> (
@@ -54,6 +56,7 @@ function App() {
     </div>
   );
 }
+
 
 
 export default App;

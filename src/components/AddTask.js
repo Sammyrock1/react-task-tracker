@@ -19,12 +19,27 @@ const myStyle = {
 };
 
 
-const AddTask = () => {
+const AddTask = ({onAdd }) => {
   const [text, setText] = useState("");
   const [day, setDay] = useState("");
   const [reminder, setReminder] = useState(false);
+
+  const onSubmit = (e) => {
+  e.preventDefault()
+
+  if (!text) {
+    alert("Please add task ")
+    return;
+  }
+  onAdd({ text, day, reminder });
+
+  setDay("");
+  setText("");
+  setReminder(false);
+}
+
     return (
-      <form className="Add-Form">
+      <form className="Add-Form" onSubmit={onSubmit}>
         <div
           className="Form-Control"
           style={{
@@ -66,7 +81,7 @@ const AddTask = () => {
         >
           <label
             style={{
-              ...myStyle,
+              ...myStyle.label
               // display: "flex",
               // fontSize: "15px",
               // fontWeight: 700,
@@ -92,12 +107,13 @@ const AddTask = () => {
         <div
           className="Form-Control Form-Control-check"
           style={{
-            marginTop: "18px",
+            ...myStyle.FormControl
+            // marginTop: "18px",
           }}
         >
           <label
             style={{
-              ...myStyle,
+              ...myStyle.label
               // style={{
               //   marginRight: "10rem",
               //   fontSize: "15px",
@@ -108,6 +124,7 @@ const AddTask = () => {
           </label>
           <input
             type="checkbox"
+            checked={reminder}
             value={reminder}
             onChange={(event) => setReminder(event.currentTarget.checked)}
           />
